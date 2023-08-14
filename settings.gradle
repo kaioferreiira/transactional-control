@@ -1,0 +1,3 @@
+rootProject.name = 'transactional-control'
+
+include 'transaction-bff'

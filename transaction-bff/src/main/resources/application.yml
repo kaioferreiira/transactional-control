@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: dev
+
+  kafka:
+    producer:
+      bootstrap-servers: 0.0.0.0:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: all
+        retries: 10
+        retry.backoff.ms: 1000
+
+topic:
+  transaction:
+    name: transaction-v1
+    partitions: 1
+    replicas: 1

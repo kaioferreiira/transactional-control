@@ -1,0 +1,26 @@
+------------------------------------------------------------------
+POST TRANSACTION NOT_ANALYZED PIX
+
+curl -X 'POST' \
+  'http://localhost:8080/v1/transactions' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "value": 1230.47,
+  "account": {
+    "agencyCode": 1109,
+    "accountCode": 372221
+  },
+  "recipient": {
+    "cpf": 10298823233,
+    "codeBank": 137,
+    "agency": "1108",
+    "account": "55982",
+    "favoredName": "Ciclano Beltrano de tal"
+  },
+  "typeTransaction": "PIX",
+  "situation": "NOT_ANALYZED"
+}'
+
+
+------------------------------------------------------------------
