@@ -1,50 +1,49 @@
+# Project structure
 
-# Estrutura projeto
+## Tools
 
-Open API 3
+- Kafka
+- docker
+- docker compose
+- Java 17+
+- Spring 3.0.5+
+- Lombok 1.18.24+
+- OpenApi 2.1.0+
 
-https://springdoc.org/
-https://www.baeldung.com/spring-rest-openapi-documentation
-# Dia 001
+# Project Usage Guide
 
-Apache Kafka surgiu como uma alternativa eficiente para o consumo de publicação de dados em larga escala.
-Mais do que uma  ferramenta de mensageria, definindo e permitindo que sistemas distribuídos possam se comunicar por
-meio de troca de eventos, ela nos permite gerenciar todo seu contexto de message por um Broker(servidor/módulo de mensagens).
+## Docker
 
-Toda comunicação das mensagens e seu broker é gerenciada pelo Zookeeper, uma ferramenta que
-direciona e organiza os fluxos de dados,  salvando, recuperando e manipulando.
+To start the project you need to run the docker-compose file, it is in the dev folder at the root of the project.
+Inside the folder you will find the file: [**docker-compose-m1-single-broker
+**](./dev/docker-compose-m1-single-broker.yml).
 
-#Introdução
+Run the following command in the terminal to load kafka locally:
 
-Para iniciar nosso entendimento e validação, irei criar um arquivo Dockerfile, contendo uma imagem do Kafka e o
-Zookeeper. Dentro da pasta voce encontrara o arquivo [**docker-compose-kafka**](./dev/docker-compose-m1-single-broker.yml).
-
-Execute no terminal o comando a seguir para subir localmente o kafka:
 ```bash
 docker-compose -f docker-compose-m1-single-broker.yml up -d 
 ```
 
-Para verificar se ele está em execução:
+To check if it is running:
 
 ```bash
 $ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                              NAMES
 64cf60b6442f   confluentinc/cp-kafka:7.3.2       "/etc/confluent/dock…"   12 seconds ago   Up 10 seconds   0.0.0.0:9092->9092/tcp, 0.0.0.0:29092->29092/tcp   kafka1
 e87c9e694a8e   confluentinc/cp-zookeeper:7.3.2   "/etc/confluent/dock…"   14 seconds ago   Up 11 seconds   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp         zoo1
-
 ```
 
-Agora vamos interagir com nosso container e plublicar um evento, para isso teremos que entrar no container:
+**Interact with our container:** Now let's publish an event, for that we will have to enter the container
 ```bash
 docker exec -it kafka1 bash 
 ```
 
-As pastas contendo os arquivos do Kafka estão dentro do diretorio opb -> bitnami -> kafka -> bin:
+Folders containing Kafka files are inside the directoryopb -> bitnami -> kafka -> bin:
 ```bash
 /opt/bitnami/kafka/bin ou /opt/bin
 ```
 
-Ao seguir o caminho das pastas veremos todos os arquivos de configs do kafka
+After following the path of the folders, we will see all the kafka config files
 ```bash
 !@1ba279a1703c:/opt/bitnami/kafka/bin$ ls
 connect-distributed.sh        kafka-configs.sh             kafka-delete-records.sh   kafka-mirror-maker.sh                kafka-server-start.sh               kafka-verifiable-producer.sh     zookeeper-shell.sh
@@ -53,56 +52,67 @@ connect-standalone.sh         kafka-console-producer.sh    kafka-features.sh    
 kafka-acls.sh                 kafka-consumer-groups.sh     kafka-leader-election.sh  kafka-reassign-partitions.sh         kafka-streams-application-reset.sh  zookeeper-security-migration.sh
 kafka-broker-api-versions.sh  kafka-consumer-perf-test.sh  kafka-log-dirs.sh         kafka-replica-verification.sh        kafka-topics.sh                     zookeeper-server-start.sh
 kafka-cluster.sh              kafka-delegation-tokens.sh   kafka-metadata-shell.sh   kafka-run-class.sh                   kafka-verifiable-consumer.sh        zookeeper-server-stop.sh
-
 ```
 
-Pronto, criamos nosso arquivo docker file contendo o kafka e o zookeeper, nas próximas etapas vamos começar a entender
-os conceitos do kafka e aplicar usando nosso servidor local.
+# Basic commands for using Kafka
 
+## Criate topic
 
-
-# Comandos
-
-## Criar topico
+```
 ./kafka-topics.sh --create --topic test-topic --replication-factor 1 --partitions 4 --bootstrap-server localhost:9092
+```
 
-## Instanciar um console para o producer
+## Instantiate a console for the producer
+
+```
 ./kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic
+```
 
-## Intanciar um consile para o consumer
+## Instantiate a console for the Consumer
 
-Dentro co container
+**Inside the container:**
 
+```
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --group <group-name>
+```
 
-Direto:
+**Command prompt:**
+
+```
 docker exec --interactive kafka1 kafka-console-consumer --bootstrap-server kafka1:19092 --topic transaction-v1 --from-beginning
+```
 
-## Listar topicos
+## List topics
+
+```
 ./kafka-topics --bootstrap-server localhost:9092 --list
+```
 
-## Deletar topicos
+## Delete topics
+
+```
 ./kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic test-topic
+```
 
-## Verificar consumer groups
+## Check consumer groups
+
+**Inside the container:**
+
+```
 ./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+```
 
+**Command prompt:**
+
+```
 docker exec --interactive kafka1 kafka-consumer-groups --bootstrap-server kafka1:19092 --list
+```
 
+# OpenApi 3
 
+**Important links**
 
-## TODO
+- https://springdoc.org/
+- https://www.baeldung.com/spring-rest-openapi-documentation
 
-Possíveis regras que serão implementadas
-
-O Domínio deve ser de conta corrente e é possível fazer as operações de depósito, saque e saldo conforme as regras abaixo:
-
-Ter estrutura para Cheque Especial.
-Validar se o valor de saque não ultrapassa o cheque especial, e se ultrapassar lançar uma critica para o usuário.
-Efetuar operação de depósito, informando a conta, valor e data atualizando o saldo.
-Efetuar operação de saque, informando a conta, valor e data e atualizando o saldo.
-Consulta de saldo a aplicação terá que ter um contrato que informe o saldo do correntista mais o cheque especial por uma data e conta.
-Consulta de Extrato mostrar as movimentações por data de saques e depósitos de uma conta corrente nos últimos 15 dias.
-Junto do código fonte do projeto da aplicação deverá ser entregue um Dockerfile para instalação.
-Suba um arquivo.zip com o projeto da aplicação sem conter a pasta target ou build do maven e gradle respectivamente
