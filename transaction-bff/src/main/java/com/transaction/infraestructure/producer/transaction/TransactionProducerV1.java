@@ -28,6 +28,7 @@ public class TransactionProducerV1 {
      * In this example, we'll use the JSON structure for message transmission.
      */
     private final KafkaTemplate<String, TransactionEventV1> kafkaTemplate;
+
     @Value("${topic.transaction.name}")
     public String topic;
 

@@ -1,18 +1,15 @@
-# Project structure
+# Menu
 
-## Tools
+- [Project structure](##Project structure)
+- [Kafka](##Kafka)
+- [Docker and Docker compose](##Docker and Docker compose)
+- [OpenApi 3](##OpenApi 3)
 
-- Kafka
-- docker
-- docker compose
-- Java 17+
-- Spring 3.0.5+
-- Lombok 1.18.24+
-- OpenApi 2.1.0+
+## Project Usage Guide
 
-# Project Usage Guide
+## Kafka
 
-## Docker
+## Docker and Docker compose
 
 To start the project you need to run the docker-compose file, it is in the dev folder at the root of the project.
 Inside the folder you will find the file: [**docker-compose-m1-single-broker
@@ -54,63 +51,53 @@ kafka-broker-api-versions.sh  kafka-consumer-perf-test.sh  kafka-log-dirs.sh    
 kafka-cluster.sh              kafka-delegation-tokens.sh   kafka-metadata-shell.sh   kafka-run-class.sh                   kafka-verifiable-consumer.sh        zookeeper-server-stop.sh
 ```
 
-# Basic commands for using Kafka
+### Basic commands for using Kafka
 
-## Criate topic
-
+**Criate topic**
 ```
 ./kafka-topics.sh --create --topic test-topic --replication-factor 1 --partitions 4 --bootstrap-server localhost:9092
 ```
 
-## Instantiate a console for the producer
-
+**Instantiate a console for the producer**
 ```
 ./kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic
 ```
 
-## Instantiate a console for the Consumer
+**Instantiate a console for the Consumer**
 
-**Inside the container:**
-
+Inside the container:
 ```
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --group <group-name>
 ```
 
-**Command prompt:**
-
+Command prompt:
 ```
 docker exec --interactive kafka1 kafka-console-consumer --bootstrap-server kafka1:19092 --topic transaction-v1 --from-beginning
 ```
 
-## List topics
-
+**List topics**
 ```
 ./kafka-topics --bootstrap-server localhost:9092 --list
 ```
 
-## Delete topics
-
+**Delete topics**
 ```
 ./kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic test-topic
 ```
 
-## Check consumer groups
+**Check consumer groups**
 
-**Inside the container:**
-
+Inside the container:
 ```
 ./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
 ```
-
 **Command prompt:**
-
 ```
 docker exec --interactive kafka1 kafka-consumer-groups --bootstrap-server kafka1:19092 --list
 ```
 
-# OpenApi 3
-
+## OpenApi 3
 **Important links**
 
 - https://springdoc.org/
