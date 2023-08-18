@@ -12,8 +12,8 @@
 ## Docker
 
 To start the project you need to run the docker-compose file, it is in the dev folder at the root of the project.
-Inside the folder you will find the file: [**docker-compose-m1-single-broker
-**](./dev/docker-compose-m1-single-broker.yml).
+Inside the folder you will find the file: [docker-compose-m1-single-broker
+](./dev/docker-compose-m1-single-broker.yml).
 
 Run the following command in the terminal to load kafka locally:
 
