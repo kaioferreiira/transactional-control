@@ -1,15 +1,15 @@
 # Menu
 
-- [Project structure](##Project structure)
+- [Project Usage Guide](##Project)
 - [Kafka](##Kafka)
-- [Docker and Docker compose](##Docker and Docker compose)
-- [OpenApi 3](##OpenApi 3)
+- [Docker and Docker compose](##Docker)
+- [OpenApi 3](##OpenApi)
 
-## Project Usage Guide
+## Project
 
 ## Kafka
 
-## Docker and Docker compose
+## Docker
 
 To start the project you need to run the docker-compose file, it is in the dev folder at the root of the project.
 Inside the folder you will find the file: [**docker-compose-m1-single-broker
@@ -97,7 +97,7 @@ Inside the container:
 docker exec --interactive kafka1 kafka-consumer-groups --bootstrap-server kafka1:19092 --list
 ```
 
-## OpenApi 3
+## OpenApi
 **Important links**
 
 - https://springdoc.org/
