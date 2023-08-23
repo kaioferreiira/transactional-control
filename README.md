@@ -1,13 +1,134 @@
-# Menu
+# Project Structure
 
-- [Project Usage Guide](##Project)
-- [Kafka](##Kafka)
-- [Docker and Docker compose](##Docker)
-- [OpenApi 3](##OpenApi)
+![Financial transactions](img/root/financial-transactions.png)
 
-## Project
+##
 
 ## Kafka
+
+Apache Kafka has emerged as an efficient alternative for large-scale data publishing and consumption, going beyond a
+mere
+messaging tool. It defines and enables distributed systems to communicate through event exchange.
+
+All message communication is managed by a Kafka cluster, a tool that directs and organizes data flows, saving,
+retrieving,
+and processing them. Nowadays, it is both common and desirable for our applications to communicate asynchronously.
+We aim for greater interoperability in our services, allowing them to communicate and exchange information
+independently.
+
+As such, publishing and consuming events in a data channel is the most appealing approach for this concept.
+
+To learn more about data streaming, visit: [kafka documentation](https://kafka.apache.org/intro#intro_streaming)
+
+### But what are events?
+
+Events are actions, the act of doing something, requesting something, informing something, and so on. Events are data
+interactions
+that trigger a response, and every response has an action. Kafka plays the role of orchestrating and handling events.
+
+A unique feature of Kafka is that it manages its events through key and value pairs. Each published event and its
+information have a specified format, which Kafka uses to perform data serialization and deserialization.
+
+### Topics
+
+All events published to Kafka are directed to a structure we call topics. Topics store the data, which we can refer to
+as
+ordered and immutable logs.
+
+Topics are created to maintain records of our stored data; every published information (event) is sent to a topic.
+Generally, topics are created to abstract our business rules. Using the example we are adopting about financial
+transactions,
+consider an event where we create a message for sending a PIX (a Brazilian instant payment system). In this event, there
+is always a body (data structure) containing user information and inputs required for PIX processing.
+
+This message will be sent to a respective topic, which at some point will be collected (consumed) and processed.
+
+![example-topic](img/kafka/example-topic.png)
+
+As depicted in the above image, each Kafka event is treated as a log entry. Each topic can be created and configured to
+store data indefinitely or until it reaches a specific size, akin to a database.
+
+The simplicity of the log and the immutability of its content are pivotal to Kafka's success as a critical component in
+our project infrastructure. In this scenario, our financial transaction would be queued for consumption without any
+alteration to its information, thereby preserving its integrity.
+
+### Producer Kafka Explanation
+
+To begin using the Kafka framework, we need to establish some foundational policies. We will define the format for
+working with events and configure how our Kafka producer and consumer will publish/write messages to the topic.
+
+In the project configuration file "application.yml," the serialization policies are defined in JSON format.
+
+Example:
+
+```groovy
+  kafka:
+producer:
+bootstrap - servers : 0.0 .0 .0 : 9092
+key - serializer : org.apache.kafka.common.serialization.StringSerializer
+value - serializer : org.springframework.kafka.support.serializer.JsonSerializer
+properties:
+acks:
+all
+retries: 10
+retry.backoff.ms : 1000
+
+```
+
+For the topic to be created, there is a configuration class that instantiates the topic with its basic settings such as
+name, replica count, and so on.
+
+```java
+
+@Configuration
+@Profile("dev")
+public class AutoCreateConfig {
+
+    @Value("${topic.transaction.name}")
+    public String topic;
+
+    @Value("${topic.transaction.partitions}")
+    public Integer partitions;
+
+    @Value("${topic.transaction.replicas}")
+    public Integer replicas;
+
+    @Bean
+    public NewTopic transactionTopicEvent() {
+        return TopicBuilder
+                .name(topic)
+                .partitions(partitions)
+                .replicas(replicas)
+                .build();
+    }
+}
+```
+
+In our configuration file, it was defined that data transport will be in JSON format. With this parameterization, we
+should
+implement the Kafka mechanism responsible for sending messages to the topic, the Kafka Template.
+In the following example, we have the creation of the template where a Java object is sent to the topic in JSON format.
+
+```java
+public class TransactionProducerV1 {
+
+    private KafkaTemplate<String, TransactionEventV1> kafkaTemplate;
+
+    @Value("${topic.transaction.name}")
+    public String topic;
+
+    public void send(TransactionEventV1 transaction) {
+
+        var mensagem = MessageBuilder.withPayload(transaction)
+                .setHeader(TOPIC, topic)
+                .setHeader(KEY, key)
+                .build();
+
+        kafkaTemplate.send(mensagem);
+    }
+}
+
+```
 
 ## Docker
 
